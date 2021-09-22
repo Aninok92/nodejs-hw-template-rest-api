@@ -1,114 +1,22 @@
 const express = require('express')
-
 const { contactSchema } = require('../../schemas')
-const contactsOperations = require('../../model/contacts')
+const { controllerWrapper, validation } = require('../../middlewars')
+const { contacts: ctrl } = require('../../controllers')
 
 const router = express.Router()
 
-router.get('/', async (req, res, next) => {
-  try {
-    const contacts = await contactsOperations.contactsList()
-    res.json({
-      status: 'success',
-      code: 200,
-      data: {
-        result: contacts,
-      },
-    })
-  } catch (error) {
-    console.log(error)
-    next(error)
-  }
-})
+router.get('/', controllerWrapper(ctrl.listContacts))
 
-router.get('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const result = await contactsOperations.contactById(id)
-    if (!result) {
-      const error = new Error(`Contact with id=${id} not found`)
-      error.status = 404
-      throw error
-    }
-    res.json({
-      status: 'success',
-      code: 200,
-      data: {
-        result,
-      },
-    })
-  } catch (error) {
-    next(error)
-  }
-})
+router.get('/:id', controllerWrapper(ctrl.contactById))
 
-router.post('/', async (req, res, next) => {
-  try {
-    const { error } = contactSchema.validate(req.body)
-    if (error) {
-      const err = new Error('missing required name field')
-      err.status = 400
-      throw err
-    }
-    const result = await contactsOperations.addContact(req.body)
-    res.status(201).json({
-      status: 'success',
-      code: 201,
-      data: {
-        result,
-      },
-    })
-  } catch (error) {
-    next(error)
-  }
-})
+router.post('/', validation(contactSchema), controllerWrapper(ctrl.addContact))
 
-router.put('/:id', async (req, res, next) => {
-  try {
-    const { error } = contactSchema.validate(req.body)
-    if (error) {
-      const err = new Error(error.message)
-      err.status = 400
-      throw err
-    }
-    const { id } = req.params
-    const result = await contactsOperations.updateContact(id, req.body)
-    if (!result) {
-      const error = new Error('missing fields')
-      error.status = 404
-      throw error
-    }
-    res.json({
-      status: 'success',
-      code: 200,
-      data: {
-        result,
-      },
-    })
-  } catch (error) {
-    next(error)
-  }
-})
+router.put(
+  '/:id',
+  validation(contactSchema),
+  controllerWrapper(ctrl.updateContact)
+)
 
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const result = await contactsOperations.removeContact(id)
-    res.json({
-      status: 'success',
-      code: 200,
-      data: {
-        result,
-      },
-    })
-    if (!result) {
-      const error = new Error(`Contact with id=${id} not found`)
-      error.status = 404
-      throw error
-    }
-  } catch (error) {
-    next(error)
-  }
-})
+router.delete('/:id', controllerWrapper(ctrl.removeContact))
 
 module.exports = router
