@@ -1,4 +1,4 @@
-const contacts = require('./db/contacts.json')
+const contacts = require('../../db/contacts.json')
 
 const contactsList = async () => contacts
 
