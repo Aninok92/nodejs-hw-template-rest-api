@@ -11,7 +11,7 @@ const updateStatusContact = async (req, res) => {
     { new: true }
   )
   if (!result) {
-    throw new NotFound('"missing field favorite"')
+    throw new NotFound('missing field favorite')
   }
   sendSuccessResponse(res, { data: result })
 }
