@@ -1,6 +1,9 @@
 const express = require('express')
 
-const { joiSchemaUser } = require('../../models/user')
+const {
+  joiSchemaUser,
+  updateSubscriptionJoiSchema,
+} = require('../../models/user')
 const {
   controllerWrapper,
   validation,
@@ -21,5 +24,12 @@ router.post('/login', validation(joiSchemaUser), controllerWrapper(ctrl.login))
 router.get('/logout', authenticate, controllerWrapper(ctrl.logout))
 
 router.get('/current', authenticate, controllerWrapper(ctrl.current))
+
+router.patch(
+  '/',
+  authenticate,
+  validation(updateSubscriptionJoiSchema),
+  controllerWrapper(ctrl.subscription)
+)
 
 module.exports = router

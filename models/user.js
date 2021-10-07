@@ -30,9 +30,14 @@ const joiSchemaUser = Joi.object({
   email: Joi.string().required(),
 })
 
+const updateSubscriptionJoiSchema = Joi.object({
+  subscription: Joi.string().valid('starter', 'pro', 'business'),
+})
+
 const User = model('user', userSchema)
 
 module.exports = {
   joiSchemaUser,
+  updateSubscriptionJoiSchema,
   User,
 }
