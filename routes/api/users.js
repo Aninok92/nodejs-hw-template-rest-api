@@ -8,6 +8,7 @@ const {
   controllerWrapper,
   validation,
   authenticate,
+  upload,
 } = require('../../middlewars')
 const ctrl = require('../../controllers/user')
 
@@ -30,6 +31,13 @@ router.patch(
   authenticate,
   validation(updateSubscriptionJoiSchema),
   controllerWrapper(ctrl.subscription)
+)
+
+router.patch(
+  '/avatars',
+  authenticate,
+  upload.single('avatarURL'),
+  controllerWrapper(ctrl.avatar)
 )
 
 module.exports = router
