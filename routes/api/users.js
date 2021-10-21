@@ -20,6 +20,8 @@ router.post(
   controllerWrapper(ctrl.signup)
 )
 
+router.get('/verify/:verifyToken', controllerWrapper(ctrl.verify))
+
 router.post('/login', validation(joiSchemaUser), controllerWrapper(ctrl.login))
 
 router.get('/logout', authenticate, controllerWrapper(ctrl.logout))
